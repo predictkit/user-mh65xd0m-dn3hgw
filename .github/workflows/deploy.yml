@@ -24,6 +24,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 🔥 Extract repository name for base path
+      - name: Get repository name
+        run: echo "REPO_NAME=$(echo ${{ github.repository }} | cut -d'/' -f2)" >> $GITHUB_ENV
+
+      # 🔥 Inject base path into HTML
+      - name: Inject base path
+        run: |
+          echo "📦 Injecting base path: /${{ env.REPO_NAME }}/"
+          sed -i 's|<head>|<head>\n    <base href="/${{ env.REPO_NAME }}/">|' index.html
+          echo "✓ Base path injected successfully"
+          echo ""
+          echo "📄 Modified index.html (first 20 lines):"
+          head -20 index.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
